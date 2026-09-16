@@ -47,9 +47,9 @@ button{
     width:100%;
     padding:15px;
     margin-top:15px;
-    color:white;
     border:none;
     border-radius:10px;
+    color:white;
     font-size:16px;
     cursor:pointer;
 }
@@ -94,8 +94,8 @@ button{
 <label>Producto</label>
 <input type="text" id="producto">
 
-<label>Costo Unitario del Producto (S/)</label>
-<input type="number" id="costo" step="0.01">
+<label>Costo Total de Compra (S/)</label>
+<input type="number" id="costoTotalCompra" value="0" step="0.01">
 
 <label>Cantidad Comprada</label>
 <input type="number" id="cantidad" value="1">
@@ -119,31 +119,34 @@ button{
 
 <div class="resultado">
 
-<p><strong>Pasaje por unidad:</strong>
+<p><strong>Costo Unitario:</strong>
+<span id="costoUnitario">S/ 0.00</span></p>
+
+<p><strong>Pasaje por Unidad:</strong>
 <span id="pasajeUnidad">S/ 0.00</span></p>
 
-<p><strong>Otros gastos por unidad:</strong>
+<p><strong>Otros Gastos por Unidad:</strong>
 <span id="otrosUnidad">S/ 0.00</span></p>
 
-<p><strong>Costo real unitario:</strong>
+<p><strong>Costo Real Unitario:</strong>
 <span id="costoReal">S/ 0.00</span></p>
 
-<p><strong>Ganancia por unidad:</strong>
+<p><strong>Ganancia por Unidad:</strong>
 <span id="gananciaUnidad">S/ 0.00</span></p>
 
-<p><strong>Precio venta unitario:</strong>
+<p><strong>Precio Venta Unitario:</strong>
 <span id="precioUnitario">S/ 0.00</span></p>
 
-<p><strong>Stock total:</strong>
+<p><strong>Stock Total:</strong>
 <span id="stockTotal">0</span></p>
 
-<p><strong>Inversión total:</strong>
+<p><strong>Inversión Total:</strong>
 <span id="inversionTotal">S/ 0.00</span></p>
 
-<p><strong>Venta total esperada:</strong>
+<p><strong>Venta Total Esperada:</strong>
 <span id="ventaTotal">S/ 0.00</span></p>
 
-<p><strong>Ganancia total:</strong>
+<p><strong>Ganancia Total:</strong>
 <span id="gananciaTotal">S/ 0.00</span></p>
 
 <div class="precio" id="precioFinal">
@@ -158,20 +161,38 @@ S/ 0.00
 
 function calcular(){
 
-    let costo =
-    parseFloat(document.getElementById("costo").value) || 0;
+    let costoTotalCompra =
+    parseFloat(
+    document.getElementById(
+    "costoTotalCompra"
+    ).value) || 0;
 
     let cantidad =
-    parseFloat(document.getElementById("cantidad").value) || 1;
+    parseFloat(
+    document.getElementById(
+    "cantidad"
+    ).value) || 1;
 
     let pasajes =
-    parseFloat(document.getElementById("pasajes").value) || 0;
+    parseFloat(
+    document.getElementById(
+    "pasajes"
+    ).value) || 0;
 
     let otros =
-    parseFloat(document.getElementById("otros").value) || 0;
+    parseFloat(
+    document.getElementById(
+    "otros"
+    ).value) || 0;
 
     let porcentaje =
-    parseFloat(document.getElementById("ganancia").value) || 0;
+    parseFloat(
+    document.getElementById(
+    "ganancia"
+    ).value) || 0;
+
+    let costoUnitario =
+    costoTotalCompra / cantidad;
 
     let pasajeUnidad =
     pasajes / cantidad;
@@ -180,7 +201,7 @@ function calcular(){
     otros / cantidad;
 
     let costoReal =
-    costo +
+    costoUnitario +
     pasajeUnidad +
     otrosUnidad;
 
@@ -196,7 +217,7 @@ function calcular(){
     Math.ceil(precioVenta);
 
     let inversionTotal =
-    (costo * cantidad) +
+    costoTotalCompra +
     pasajes +
     otros;
 
@@ -207,6 +228,9 @@ function calcular(){
     let gananciaTotal =
     ventaTotal -
     inversionTotal;
+
+    document.getElementById("costoUnitario").innerText =
+    "S/ " + costoUnitario.toFixed(2);
 
     document.getElementById("pasajeUnidad").innerText =
     "S/ " + pasajeUnidad.toFixed(2);
@@ -251,16 +275,16 @@ function enviarWhatsApp(){
     let precio =
     document.getElementById("precioFinal").innerText;
 
-let mensaje =
+    let mensaje =
     "📋 COTIZACIÓN\n\n" +
-    "Producto: " + producto +
-    "\nCantidad: " + cantidad +
-    "\nPrecio Unitario: " + precio;
+    "🛒 Producto: " + producto +
+    "\n📦 Cantidad: " + cantidad +
+    "\n💵 Precio Unitario: " + precio;
 
     window.open(
-        "https://wa.me/?text=" +
-        encodeURIComponent(mensaje),
-        "_blank"
+    "https://wa.me/?text=" +
+    encodeURIComponent(mensaje),
+    "_blank"
     );
 
 }
