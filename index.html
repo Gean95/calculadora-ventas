@@ -1,1 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Ventas</title>
 
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:15px;
+}
+
+.card{
+    max-width:550px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 0 15px rgba(0,0,0,.1);
+}
+
+h1{
+    text-align:center;
+    color:#059669;
+}
+
+label{
+    display:block;
+    margin-top:12px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:5px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.btn-calcular{background:#10b981;}
+.btn-whatsapp{background:#25d366;}
+.btn-limpiar{background:#f59e0b;}
+.btn-borrar{background:#ef4444;}
+.btn-excel{background:#2563eb;}
+
+.resultado{
+    margin-top:20px;
+    background:#ecfdf5;
+    padding:15px;
+    border-radius:15px;
+}
+
+.resultado p{
+    margin:8px 0;
+}
+
+.precio{
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+    color:#059669;
+    margin-top:15px;
+}
+
+.historial{
+    margin-top:20px;
+}
+
+.item{
+    background:#f8fafc;
+    padding:10px;
+    margin-bottom:8px;
+    border-radius:10px;
+    border-left:5px solid #10b981;
+}
+
+.pequeno{
+    font-size:12px;
+    color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>💰 Calculadora de Ventas</h1>
+
+<label>Producto</label>
+<input type="text" id="producto">
+
+<label>Costo Unitario del Producto (S/)</label>
+<input type="number" id="costo" step="0.01">
+
+<label>Cantidad Comprada</label>
+<input type="number" id="cantidad" value="1">
+
+<label>Pasajes Totales (S/)</label>
+<input type="number" id="pasajes" step="0.01">
+
+<label>Otros Gastos Totales (S/)</label>
+<input type="number" id="otros" step="0.01">
+
+<label>Ganancia (%)</label>
+<input type="number" id="ganancia" value="60">
+
+<button class="btn-calcular" onclick="calcular()">
+📊 Calcular
+</button>
+
+<div class="resultado">
+
+<p><strong>Pasaje por unidad:</strong>
+<span id="pasajeUnidad">S/ 0.00</span></p>
+
+<p><strong>Otros gastos por unidad:</strong>
+<span id="otrosUnidad">S/ 0.00</span></p>
+
+<p><strong>Costo unitario real:</strong>
+<span id="costoReal">S/ 0.00</span></p>
+
+<p><strong>Ganancia:</strong>
+<span id="gananciaSoles">S/ 0.00</span></p>
+
+<p><strong>Precio calculado:</strong>
+<span id="precioCalculado">S/ 0.00</span></p>
+
+<div class="precio" id="precioRedondeado">
+S/ 0.00
+</div>
+
+</div>
+
+<button class="btn-whatsapp" onclick="compartirWhatsApp()">
+📱 Compartir por WhatsApp
+</button>
+
+<button class="btn-limpiar" onclick="resetearCampos()">
+🧹 Limpiar Campos
+</button>
+
+<button class="btn-borrar" onclick="borrarHistorial()">
+🗑️ Borrar Historial
+</button>
+
+<button class="btn-excel" onclick="exportarCSV()">
+📊 Descargar Excel
+</button>
+
+<div class="historial">
+
+<h3>📋 Historial</h3>
+
+<div id="listaHistorial"></div>
+
+</div>
+
+<div class="resultado">
+
+<h3>📈 Resumen</h3>
+
+<p>Total productos:
+<span id="totalProductos">0</span></p>
+
+<p>Precio promedio:
+<span id="precioPromedio">S/ 0.00</span></p>
+
+<p>Precio más alto:
+<span id="precioMaximo">S/ 0.00</span></p>
+
+<p>Precio más bajo:
+<span id="precioMinimo">S/ 0.00</span></p>
+
+</div>
+
+</div>
+
+<script>
+
+let mensajeWhatsapp = "";
+
+cargarHistorial();
+
+function calcular(){
+
+let producto =
+document.getElementById("producto").value;
+
+let costo =
+parseFloat(document.getElementById("costo").value) || 0;
+
+let cantidad =
+parseFloat(document.getElementById("cantidad").value) || 1;
+
+let pasajes =
+parseFloat(document.getElementById("pasajes").value) || 0;
+
+let otros =
+parseFloat(document.getElementById("otros").value) || 0;
+
+let porcentaje =
+parseFloat(document.getElementById("ganancia").value) || 0;
+
+let pasajeUnidad =
+pasajes / cantidad;
+
+let otrosUnidad =
+otros / cantidad;
+
+let costoReal =
+costo + pasajeUnidad + otrosUnidad;
+
+let ganancia =
+costoReal * porcentaje / 100;
+
+let precio =
+costoReal + ganancia;
+
+let precioRedondeado =
+Math.ceil(precio);
+
+document.getElementById("pasajeUnidad").innerText =
+"S/ " + pasajeUnidad.toFixed(2);
+
+document.getElementById("otrosUnidad").innerText =
+"S/ " + otrosUnidad.toFixed(2);
+
+document.getElementById("costoReal").innerText =
+"S/ " + costoReal.toFixed(2);
+
+document.getElementById("gananciaSoles").innerText =
+"S/ " + ganancia.toFixed(2);
+
+document.getElementById("precioCalculado").innerText =
+"S/ " + precio.toFixed(2);
+
+document.getElementById("precioRedondeado").innerText =
+"Precio sugerido: S/ " + precioRedondeado.toFixed(2);
+
+mensajeWhatsapp =
+"🛒 Producto: " + producto +
+"%0A💲 Costo Real: S/" + costoReal.toFixed(2) +
+"%0A📈 Ganancia: " + porcentaje + "%" +
+"%0A✅ Precio Venta: S/" + precioRedondeado.toFixed(2);
+
+guardarHistorial(
+producto,
+precioRedondeado
+);
+
+}
+
+function compartirWhatsApp(){
+
+if(mensajeWhatsapp===""){
+alert("Primero calcula un producto");
+return;
+}
+
+window.open(
+"https://wa.me/?text=" + mensajeWhatsapp,
+"_blank"
+);
+
+}
+
+function resetearCampos(){
+
+document.getElementById("producto").value="";
+document.getElementById("costo").value="";
+document.getElementById("cantidad").value=1;
+document.getElementById("pasajes").value="";
+document.getElementById("otros").value="";
+document.getElementById("ganancia").value=60;
+
+document.getElementById("pasajeUnidad").innerText="S/ 0.00";
+document.getElementById("otrosUnidad").innerText="S/ 0.00";
+document.getElementById("costoReal").innerText="S/ 0.00";
+document.getElementById("gananciaSoles").innerText="S/ 0.00";
+document.getElementById("precioCalculado").innerText="S/ 0.00";
+document.getElementById("precioRedondeado").innerText="S/ 0.00";
+
+}
+
+function guardarHistorial(producto,precio){
+
+if(producto==="") return;
+
+let historial =
+JSON.parse(localStorage.getItem("historial")) || [];
+
+historial.unshift({
+producto:producto,
+precio:precio,
+fecha:new Date().toLocaleString()
+});
+
+historial = historial.slice(0,50);
+
+localStorage.setItem(
+"historial",
+JSON.stringify(historial)
+);
+
+cargarHistorial();
+
+}
+
+function cargarHistorial(){
+
+let historial =
+JSON.parse(localStorage.getItem("historial")) || [];
+
+let html="";
+
+historial.forEach(item=>{
+
+html += `
+<div class="item">
+<strong>${item.producto}</strong><br>
+Precio: S/ ${item.precio}<br>
+<span class="pequeno">${item.fecha}</span>
+</div>
+`;
+
+});
+
+document.getElementById("listaHistorial").innerHTML = html;
+
+actualizarResumen();
+}
+
+function borrarHistorial(){
+
+if(confirm("¿Deseas borrar todo el historial?")){
+
+localStorage.removeItem("historial");
+
+document.getElementById("listaHistorial").innerHTML="";
+
+actualizarResumen();
+
+alert("Historial eliminado");
+
+}
+
+}
+
+function exportarCSV(){
+
+let historial =
+JSON.parse(localStorage.getItem("historial")) || [];
+
+if(historial.length===0){
+
+alert("No hay datos para exportar");
+
+return;
+}
+
+let csv =
+"Producto,Precio,Fecha\n";
+
+historial.forEach(item=>{
+
+csv += `"${item.producto}","${item.precio}","${item.fecha}"\n`;
+
+});
+
+let blob = new Blob(
+[csv],
+{
+type:"text/csv;charset=utf-8;"
+}
+);
+
+let link =
+document.createElement("a");
+
+link.href =
+URL.createObjectURL(blob);
+
+link.download =
+"historial_ventas.csv";
+
+link.click();
+
+}
+
+function actualizarResumen(){
+
+let historial =
+JSON.parse(localStorage.getItem("historial")) || [];
+
+if(historial.length===0){
+
+document.getElementById("totalProductos").innerText=0;
+document.getElementById("precioPromedio").innerText="S/ 0.00";
+document.getElementById("precioMaximo").innerText="S/ 0.00";
+document.getElementById("precioMinimo").innerText="S/ 0.00";
+
+return;
+}
+
+let precios =
+historial.map(item => Number(item.precio));
+
+let promedio =
+precios.reduce((a,b)=>a+b,0)
+/ precios.length;
+
+document.getElementById("totalProductos").innerText =
+historial.length;
+
+document.getElementById("precioPromedio").innerText =
+"S/ " + promedio.toFixed(2);
+
+document.getElementById("precioMaximo").innerText =
+"S/ " + Math.max(...precios).toFixed(2);
+
+document.getElementById("precioMinimo").innerText =
+"S/ " + Math.min(...precios).toFixed(2);
+
+}
+</script>
+
+</body>
+</html>
