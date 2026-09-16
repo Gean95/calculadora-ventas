@@ -180,13 +180,17 @@ function calcular(){
     otros / cantidad;
 
     let costoReal =
-    costo + pasajeUnidad + otrosUnidad;
+    costo +
+    pasajeUnidad +
+    otrosUnidad;
 
     let gananciaUnidad =
-    costoReal * porcentaje / 100;
+    costoReal *
+    porcentaje / 100;
 
     let precioVenta =
-    costoReal + gananciaUnidad;
+    costoReal +
+    gananciaUnidad;
 
     let precioRedondeado =
     Math.ceil(precioVenta);
@@ -197,10 +201,12 @@ function calcular(){
     otros;
 
     let ventaTotal =
-    precioRedondeado * cantidad;
+    precioRedondeado *
+    cantidad;
 
     let gananciaTotal =
-    ventaTotal - inversionTotal;
+    ventaTotal -
+    inversionTotal;
 
     document.getElementById("pasajeUnidad").innerText =
     "S/ " + pasajeUnidad.toFixed(2);
@@ -245,19 +251,11 @@ function enviarWhatsApp(){
     let precio =
     document.getElementById("precioFinal").innerText;
 
-    let ventaTotal =
-    document.getElementById("ventaTotal").innerText;
-
-    let ganancia =
-    document.getElementById("gananciaTotal").innerText;
-
-    let mensaje =
+let mensaje =
     "📋 COTIZACIÓN\n\n" +
-    "🛒 Producto: " + producto +
-    "\n📦 Cantidad: " + cantidad +
-    "\n💰 Precio Unitario: " + precio +
-    "\n💵 Venta Total: " + ventaTotal +
-    "\n📈 Ganancia Total: " + ganancia;
+    "Producto: " + producto +
+    "\nCantidad: " + cantidad +
+    "\nPrecio Unitario: " + precio;
 
     window.open(
         "https://wa.me/?text=" +
